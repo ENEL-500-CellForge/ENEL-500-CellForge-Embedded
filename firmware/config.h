@@ -8,7 +8,9 @@ constexpr uint32_t TICK_MS  = 100;   // control loop period
 
 // ---- Limits (from the roadmap; tune on the bench) ----
 constexpr int32_t MV_CUTOFF_CHARGING     = 4200;   // End of charge
+constexpr int32_t MV_OVERVOLTAGE_FAULt   = 4300;   // Over-voltage fault
 constexpr int32_t MV_CUTOFF_DISCHARGING  = 2800;   // End of discharge
+constexpr int32_t MV_UNDERVOLTAGE_FAULT  = 2700;   // Under-voltage fault
 constexpr int32_t MV_VREF                = 2400;   // DAC output for 1500 mA discharge
 constexpr int32_t V_PRESENT_MV           = 500;    // cell "inserted" above this
 constexpr int32_t TEMP_STOP_DC           = 450;    // Stop charging/discharging above this (in tenths of degC, aka 45.0 degC)
