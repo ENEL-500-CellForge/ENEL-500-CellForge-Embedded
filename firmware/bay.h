@@ -43,7 +43,6 @@ struct Bay {
   BayState state;
   uint32_t state_since_ms;
   uint32_t capacity_mah_x1000;   // running discharge integral (TODO)
-  // TODO: fault code, debounce counters, etc.
 };
 
 #endif
