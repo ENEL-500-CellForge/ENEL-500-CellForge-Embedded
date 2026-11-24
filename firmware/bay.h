@@ -4,7 +4,7 @@
 
 // One Bay = one cell slot. There are NUM_BAYS of them, each with its own FSM.
 
-// ----- FSM States -----
+// ----- FSM States ----- //
 enum class BayState : uint8_t {
   Empty,        // 0: Bay disabled by UI
   Enabled,      // 1: Bay enabled by UI, waiting for cell
@@ -15,6 +15,15 @@ enum class BayState : uint8_t {
   Charge2,      // 6: Charge back to 4.2 V
   Complete,     // 7: Charge/discharge cycle complete, waiting for cell removal
   Fault         // 8: Latched until cell removed
+};
+
+// ----- Fault Codes ----- //
+enum class FaultCode : uint8_t {
+  None,             // 0: No fault
+  Overvoltage,      // 1: Cell voltage exceeded MV_OVERVOLTAGE_FAULT
+  Undervoltage,     // 2: Cell voltage dropped below MV_UNDERVOLTAGE_FAULT
+  Overtemperature,  // 3: Cell temperature exceeded TEMP_STOP_DC
+  Overcurrent       // 4: Cell current exceeded MA_DISCHARGING
 };
 
 // FSM Inputs via hal_read() (sampled once per tick).
@@ -41,8 +50,9 @@ struct Outputs {
 
 struct Bay {
   BayState state;
+  BayState prev_state;
   uint32_t state_since_ms;
-  uint32_t capacity_mah_x1000;   // running discharge integral (TODO)
+  uint32_t capacity_mah_x1000;   // TODO: Do we need this here? Or can it just be in the discharge state?
 };
 
 #endif
