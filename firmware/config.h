@@ -21,4 +21,11 @@ constexpr int32_t MA_DISCHARGING         = 1500;   // TODO: Do we use this? Or j
 // constexpr uint8_t PIN_CHRG[NUM_BAYS]         = { ... };
 // constexpr uint8_t PIN_STDBY[NUM_BAYS]        = { ... };
 
+// I2C addresses
+constexpr uint8_t INA219_DISCHARGE_ADDR[NUM_BAYS] = {0x40, 0x41, 0x42, 0x43}; // Discharging circuit
+constexpr uint8_t INA219_BATTERY_ADDR[NUM_BAYS]   = {0x44, 0x45, 0x46, 0x47}; // Input to battery (output from TP5100)
+constexpr uint8_t INA219_INPUT_ADDR[NUM_BAYS]     = {0x4C, 0x4D, 0x4E, 0x4F}; // Input to TP5100
+constexpr uint8_t INA219_INPUT_ADDR[NUM_BAYS] 
+
+
 #endif
