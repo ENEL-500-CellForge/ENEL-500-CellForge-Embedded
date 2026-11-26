@@ -22,7 +22,8 @@ static void set_state(Bay& b, BayState next, uint32_t now_ms, FaultCode fault_co
 
 }
 
-// ----- Fault Check Function ----- //
+// ----- Periodic Fault Check Function ----- //
+// TODO: Why do we need to return a value?
 static bool check_faults(Bay& b, const Inputs& in) {
   // Over-voltage fault check
   if (in.voltage_mv > MV_OVERVOLTAGE_FAULT) {
@@ -48,6 +49,12 @@ static bool check_faults(Bay& b, const Inputs& in) {
     return true;
   }
 
+  // Internal resistance fault check
+  if (in.voltage_mv / in.current_ma > MAX_INTERNAL_RESISTANCE) {
+    set_state(b, BayState::Fault, in.now_ms, FaultCode::InternalResistance);
+    return true;
+  }
+
   // TODO: unexpected cell removal (voltage < V_PRESENT_MV while mid-test)
   // (void)b; (void)in;
   return false;
@@ -61,7 +68,7 @@ void bay_init(Bay& b) {
 
 Outputs bay_step(Bay& b, const Inputs& in) {
   if (check_faults(b, in)) {
-    return Outputs{false, false, 0};
+    return Outputs{false, false};
   } // TODO: Verify this check
 
   switch (b.state) {
@@ -79,27 +86,59 @@ Outputs bay_step(Bay& b, const Inputs& in) {
 
     case BayState::Precheck:
       // TODO: Switch logic
+      if check_faults(b, in) {
+        return Outputs{false, false};
+      } // TODO: Check if we need to return here or if we can just let the state machine continue
       break;
 
     case BayState::Charge1:
-      // TODO: Switch logic
+      // Enable charging 
+      return Outputs{true, false}; // Charge enabled, discharge disabled
+
+      // Transition to discharging once fully charged
+      if in.voltage_mv >= MV_CUTOFF_CHARGING {
+        set_state(b, BayState::Discharge, in.now_ms);
+      }
+
       break;
 
     case BayState::Discharge:
-      // TODO: Switch logic
+      // Enable discharging
+      return Outputs{false, true}; // Charge disabled, discharge enabled
+
+      // Transition to Charge2 once fully discharged
+      if in.voltage_mv <= MV_CUTOFF_DISCHARGING {
+        set_state(b, BayState::Charge2, in.now_ms);
+      }
+      
       break;
 
     case BayState::Charge2:
-      // TODO: Switch logic
+      // Enable charging
+      return Outputs{true, false}; // Charge enabled, discharge disabled
+
+      // Transition to Complete once fully charged
+      if in.voltage_mv >= MV_CUTOFF_CHARGING {
+        set_state(b, BayState::Complete, in.now_ms);
+      }
+
       break;
 
     case BayState::Complete:
-      // TODO: Switch logic
+      // Disable both charging and discharging
+      return Outputs{false, false}; // Charge disabled, discharge disabled
+
+      // Transition to Empty once the cell is removed
+      if in.voltage_mv < V_PRESENT_MV {
+        set_state(b, BayState::Empty, in.now_ms);
+      }
+      
       break;
 
     case BayState::Fault:
       // Before entering this state, we need to store the previous state so we can return to it after the fault is cleared.
       // Run check_faults(), if it returns false then return to the previous state. If it returns true, stay in Fault.
+      // Need different case for each fault type.
       break;
   }
 
