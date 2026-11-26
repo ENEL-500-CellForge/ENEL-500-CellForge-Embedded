@@ -27,8 +27,8 @@ enum class FaultCode : uint8_t {
 };
 
 // FSM Inputs via hal_read() (sampled once per tick).
-// ********TODO: Define tick******** //
-// ********TODO: Do we need more inputs******** //
+// TODO: Define tick
+// TODO: Do we need more inputs
 struct Inputs {
   uint32_t now_ms;        // Current time (ms)
   int32_t  voltage_mv;    // Voltage (mV)
@@ -37,12 +37,12 @@ struct Inputs {
   bool     chrg;          // MCU_CHRG from TP5100
   bool     stdby;         // MCU_STDBY from TP5100
   bool     enabled;       // IsReadyForCell from UI
-  bool     id_confirmed;  // ********TODO: Define******** //
+  bool     id_confirmed;  // TODO: Define
 };
 
 // FSM outputs via hal_write() (applied once per tick).
-// ********TODO: Is it really once per tick? Define tick******** //
-// ********TODO: Do we need more outputs?******** //
+// TODO: Is it really once per tick? Define tick
+// TODO: Do we need more outputs?
 struct Outputs {
   bool     charge_en;     // True to enable charging (TP5100 EN pin for charging circuit), false to disable
   bool     discharge_en;  // True to enable discharging (TP5100 EN pin for discharging circuit), false to disable
