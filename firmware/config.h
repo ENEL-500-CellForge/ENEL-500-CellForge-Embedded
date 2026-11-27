@@ -15,7 +15,9 @@ constexpr int32_t MV_VREF                = 2400;   // DAC output for 1500 mA dis
 constexpr int32_t V_PRESENT_MV           = 500;    // cell "inserted" above this
 constexpr int32_t TEMP_STOP_DC           = 450;    // Stop charging/discharging above this (in tenths of degC, aka 45.0 degC)
 constexpr int32_t TEMP_CONTINUE_DC       = 400;    // Resume charging/discharging below this (in tenths of degC, aka 40.0 degC)
-constexpr int32_t MA_DISCHARGING         = 1500;   // TODO: Do we use this? Or just Vref for discharge current control?
+constexpr int32_t MA_DISCHARGING         = 1500;   
+constexpr int32_t MA_CHARGING            = 1000;   // TODO: Should this be the same as the discharging current?
+constexpr int32_t MA_OVERCURRENT_FAULT   = 1700;
 
 // ---- Pins (TODO: fill in from the schematic) ----
 // constexpr uint8_t PIN_CHARGE_EN[NUM_BAYS]    = { ... };
